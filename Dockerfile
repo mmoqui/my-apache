@@ -1,7 +1,7 @@
 FROM debian:bookworm-slim
 
 MAINTAINER Miguel Moquillon "miguel.moquillon@gmail.com"
-LABEL name="..." description="…"
+LABEL name="My Apache Distribution" description="My own custom Apache2 to serves my applications"
 
 ARG DEFAULT_LOCALE=fr_FR.UTF-8
 ARG USER_ID=1000
@@ -14,25 +14,25 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked apt-get update \
 	&& apt-get install -y tzdata \
 	&& apt-get install -y --no-install-recommends locales \
-        curl \
+      curl \
     	psmisc \
-		iputils-ping \
+		  iputils-ping \
     	vim \
     	procps \
     	net-tools \
-        gnupg \
+      gnupg \
     	zip \
     	unzip \
-        bzip2 \
-        openssl \
+      bzip2 \
+      openssl \
     	ca-certificates \
     	apache2 \
-        libapache2-mod-php \
-        php-curl \
-        php-mbstring \
-        php-xml \
-        php-zip \
-        php-imagick
+      libapache2-mod-php \
+      php-curl \
+      php-mbstring \
+      php-xml \
+      php-zip \
+      php-imagick
 
 RUN set -e; \
     update-ca-certificates -f; \
@@ -54,7 +54,7 @@ COPY --chown=${USER_ID}:${GROUP_ID} src/inputrc /home/myuser/.inputrc
 COPY src/mywebapp.conf /etc/apache2/sites-available/
 COPY src/run.sh /usr/local/bin/
 
-RUN a2enmod http2 \
+RUN a2enmod proxy proxy_http rewrite headers reqtimeout http2 \
     && a2dissite 000-default.conf default-ssl.conf \
     && a2ensite mywebapp.conf
 
